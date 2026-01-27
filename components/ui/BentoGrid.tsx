@@ -150,7 +150,7 @@ export const BentoGridItem = ({
                 </div>
               </div>
 
-              <div className="flex flex-col items-center px-10 z-20 mt-8">
+              <div className="flex flex-col items-center px-10 z-20 mt-6">
                 <div className="w-20 h-[1.5px] bg-gradient-to-r from-transparent via-purple-500/60 to-transparent mb-4" />
                 <span className="font-kaushan font-extralight text-[#C1C2D3] text-[10px] md:text-xs uppercase tracking-[0.3em] leading-relaxed text-center opacity-70">
                   Continuous Learning Modern Tools & Technologies
@@ -165,16 +165,7 @@ export const BentoGridItem = ({
             <div className="absolute inset-0 bg-gradient-to-t from-purple-500/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="z-50 w-full space-y-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <p className="text-[#C1C2D3] uppercase tracking-[0.3em] text-[10px] font-bold">
-                  System Status: Active
-                </p>
-              </div>
-
+              {/* REMOVED STATUS PULSE DIV FROM HERE */}
               <div className="py-2">
                 <LiveClock />
                 <p className="text-[#C1C2D3] text-[10px] mt-1 opacity-50 font-mono tracking-widest uppercase">
