@@ -48,7 +48,7 @@ const Grid = () => {
 
         {/* PROFILE LINKS */}
         <div className="mt-20">
-          <p className="font-kaushan text-center text-2xl md:text-3xl mb-8 text-primary/80 animate-pulse">
+          <p className="font-kaushan text-center text-2xl md:text-3xl mb-8 text-primary/80">
             Problem-Solving Profiles
           </p>
           
