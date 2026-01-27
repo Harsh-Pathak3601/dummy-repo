@@ -106,7 +106,7 @@ const Hero = () => {
           <div className="flex-1 flex justify-center md:justify-end">
             <div className="relative group">
               {/* Dynamic halo that glows purple on hover */}
-              <div className="absolute inset-0 rounded-full bg-primary/20 blur-[60px] animate-pulse group-hover:bg-primary/40 transition-all duration-700" />
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-[60px]  group-hover:bg-primary/40 transition-all duration-700" />
               
               <img
                 src="/harsh.jpeg"
