@@ -77,14 +77,15 @@ spareImg: "",
   },
 ];
 
-export const projects = [
+  export const projects = [
   {
     id: 1,
     title: "DragonBall Z",
-    des: "An interactive Dragon Ball Z–inspired experience showcasing powerful characters, energy effects.",
+    des: "An interactive Dragon Ball Z–inspired experience showcasing powerful characters, energy effects, and immersive animations.",
     img: "/DragonBall.jpg",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/fm.svg"],
-    link: "/ui.DragonBall.com",
+    link: "https://ui.DragonBall.com",
+    github: "https://github.com/Harsh-Pathak3601/DragonBall-Z", // Updated
   },
   {
     id: 2,
@@ -92,23 +93,26 @@ export const projects = [
     des: "A visually engaging Pokémon-themed web project featuring iconic characters, smooth animations, and a responsive modern UI.",
     img: "/Pokemon.webp",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
-    link: "/ui.Pokemon.com",
+    link: "https://ui.Pokemon.com",
+    github: "https://github.com/Harsh-Pathak3601/Pokemon-Web", // Updated
   },
   {
     id: 3,
     title: "Idaten Jump",
     des: "A high-energy Idaten Jump–inspired project highlighting speed, motion, and dynamic UI interactions using cutting-edge frontend tools.",
-    img: "idatenjump.webp",
+    img: "/idatenjump.webp",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/c.svg"],
-    link: "/ui.Idaten-Jump.com",
+    link: "https://ui.Idaten-Jump.com",
+    github: "https://github.com/Harsh-Pathak3601/Idaten-Jump", // Updated
   },
   {
     id: 4,
     title: "Reyukando",
-     des: "A modern anime-inspired website recreation with smooth GSAP animations and immersive Three.js 3D effects for a premium visual experience.",
+    des: "A modern anime-inspired website recreation with smooth GSAP animations and immersive Three.js 3D effects for a premium visual experience.",
     img: "/reyukando.jpg",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/three.svg", "/gsap.svg"],
-    link: "/ui.Reyukando.com",
+    link: "https://ui.Reyukando.com",
+    github: "https://github.com/Harsh-Pathak3601/Reyukando", // Updated
   },
 ];
 
