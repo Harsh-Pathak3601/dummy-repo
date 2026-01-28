@@ -1,109 +1,202 @@
 "use client";
 
-import { FaLocationArrow, FaGithub } from "react-icons/fa6";
-import { ArrowUpRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { FaLocationArrow, FaGithub, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { LayoutGrid, Layers, ArrowUpRight, GitFork, Star } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { projects } from "@/data";
 
 const RecentProjects = () => {
-  return (
-    <section 
-      className="w-full py-20 relative overflow-hidden" 
-      id="projects"
-      style={{
-        background: `radial-gradient(circle at 50% -10%, #130624 0%, #050505 50%, #000000 100%)`
-      }}
+  const [viewMode, setViewMode] = useState<"stack" | "grid">("grid");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth < 768) {
+        setViewMode("grid");
+      } else {
+        setViewMode("stack");
+      }
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const handleNext = () => setCurrentIndex((prev) => (prev + 1) % projects.length);
+  const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
+
+  const ProjectCard = ({ item }: { item: any }) => (
+    <motion.div
+      whileHover={viewMode === "grid" ? { y: -8 } : {}}
+      className="relative flex flex-col rounded-[2rem] overflow-hidden border border-white/[0.08] bg-[#10131e] group transition-all duration-500 shadow-2xl h-fit w-full"
     >
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      <div className="relative aspect-[16/9] overflow-hidden m-3 rounded-[1.5rem]">
+        <img
+          src={item.img}
+          alt={item.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        />
+      </div>
 
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center">
+        {/* Title Area with Integrated Mobile Chevrons */}
+        <div className="flex items-center justify-center gap-3 mb-3 w-full">
+          {/* Small Mobile Left Chevron */}
+          {viewMode === "stack" && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+              className="md:hidden p-2 rounded-full bg-white/5 border border-white/10 active:bg-primary/20 transition-all"
+            >
+              <FaChevronLeft size={14} className="text-primary" />
+            </button>
+          )}
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        
-        <div className="text-center mb-16">
-          <h1 className="heading text-foreground whitespace-nowrap">
-            Selected <span className="text-primary">Projects</span>
-          </h1>
-          <p className="mt-4 text-sm sm:text-base md:text-lg lg:text-xl md:tracking-wider text-muted-foreground font-kaushan max-w-2xl mx-auto text-center">
-            Curated projects showcasing my skills and problem-solving.
-          </p>
-          <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-primary to-transparent mt-8 mx-auto opacity-40" />
+          <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+            {item.title}
+          </h2>
+
+          {/* Small Mobile Right Chevron */}
+          {viewMode === "stack" && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); handleNext(); }}
+              className="md:hidden p-2 rounded-full bg-white/5 border border-white/10 active:bg-primary/20 transition-all"
+            >
+              <FaChevronRight size={14} className="text-primary" />
+            </button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 items-center justify-center">
-          {projects.map((item) => (
-            <div
-              key={item.id}
-              className="group relative flex flex-col rounded-3xl overflow-hidden border border-white/[0.05] bg-white/[0.01] backdrop-blur-xl transition-all duration-700 hover:border-primary/40 hover:shadow-[0_0_50px_-10px_rgba(168,85,247,0.3)]"
+        <p className="text-muted-foreground text-xs md:text-sm leading-relaxed max-w-[95%] mb-5 line-clamp-4">
+          {item.des}
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+          {item.iconLists.map((icon: string, i: number) => (
+            <div 
+              key={i} 
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-md"
             >
-              <div className="relative overflow-hidden aspect-video">
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-90" />
-              </div>
-
-              <div className="p-6 md:p-8 flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h2>
-                  <Link 
-                    href={item.github || "https://github.com/Harsh-Pathak3601"} 
-                    target="_blank" 
-                    className="p-2 rounded-full bg-secondary/20 text-muted-foreground hover:text-primary hover:bg-secondary transition-all"
-                  >
-                    <FaGithub size={18} />
-                  </Link>
-                </div>
-                
-                <p className="text-muted-foreground text-xs md:text-sm line-clamp-3 mb-8 leading-relaxed italic pl-1">
-                  {item.des}
-                </p>
-
-                {/* Updated Footer for Mobile Stability */}
-                <div className="mt-auto flex items-center justify-between gap-2">
-                  <div className="flex items-center">
-                    {item.iconLists.map((icon, index) => (
-                      <div
-                        key={index}
-                        className="border border-white/[0.1] rounded-full bg-[#050505] lg:w-10 lg:h-10 w-7 h-7 md:w-8 md:h-8 flex justify-center items-center backdrop-blur-sm shadow-inner"
-                        style={{ transform: `translateX(-${5 * index}px)` }}
-                      >
-                        <img src={icon} alt="icon" className="p-1.5" />
-                      </div>
-                    ))}
-                  </div>
-
-                  <Link
-                    href={item.link}
-                    target="_blank"
-                    /* whitespace-nowrap: Prevents text wrapping.
-                       px-3 py-2 sm:px-6 sm:py-2.5: Adjusts button size for touch targets.
-                       text-[10px] sm:text-sm: Scales font size for small screens.
-                    */
-                    className="flex items-center gap-2 px-3 py-2 sm:px-6 sm:py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-[10px] sm:text-sm shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all whitespace-nowrap"
-                  >
-                    Live Demo
-                    <FaLocationArrow className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                  </Link>
-                </div>
-              </div>
+               <img src={icon} alt="tech" className="w-3.5 h-3.5 opacity-80" />
+               <span className="text-[10px] font-medium text-primary uppercase tracking-wider">
+                 {item.techNames ? item.techNames[i] : "Tech"}
+               </span>
             </div>
           ))}
         </div>
 
-        <div className="mt-20 flex justify-center">
-          <Link
-            href="https://github.com/Harsh-Pathak3601?tab=repositories"
-            target="_blank"
-            className="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:bg-primary/10"
-          >
-            <span className="text-sm md:text-base text-foreground font-semibold">Explore Full Archive</span>
-            <ArrowUpRight className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+        <div className="w-full flex items-center justify-between pt-4 border-t border-white/5">
+          <div className="flex items-center gap-3 text-muted-foreground/60">
+            <div className="flex items-center gap-1 text-[11px]"><Star size={14} className="text-yellow-500/50" /> 0</div>
+            <div className="flex items-center gap-1 text-[11px]"><GitFork size={14} /> 0</div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link href={item.github || "#"} target="_blank" className="p-2.5 rounded-full bg-white/5 text-white/40 hover:text-white transition-all border border-white/5 hover:border-white/20">
+              <FaGithub size={18} />
+            </Link>
+            <Link href={item.link} target="_blank" className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-[10px] sm:text-xs font-bold hover:bg-opacity-90 transition-all shadow-lg shadow-primary/20 active:scale-95 whitespace-nowrap">
+              Live Demo <FaLocationArrow size={12} className="text-white" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  return (
+    <section 
+      className="w-full py-20 relative overflow-hidden min-h-screen flex flex-col items-center justify-center" 
+      id="projects"
+      style={{ background: `radial-gradient(circle at 50% -10%, #1a0b2e 0%, #050505 60%, #000000 100%)` }}
+    >
+      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full flex flex-col items-center text-center">
+        <div className="mb-8">
+          <h1 className="heading text-foreground mb-3 text-3xl md:text-5xl">
+            Selected <span className="text-primary">Projects</span>
+          </h1>
+          <p className="text-muted-foreground font-kaushan italic text-base md:text-lg max-w-xl mx-auto">
+            A showcase of my recent work and technical experiments.
+          </p>
+        </div>
+
+        <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 backdrop-blur-md mb-10 shadow-xl">
+          <button onClick={() => setViewMode("stack")} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${viewMode === "stack" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-white/40 hover:text-white"}`}>
+            <Layers size={14} /> Stack
+          </button>
+          <button onClick={() => setViewMode("grid")} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${viewMode === "grid" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-white/40 hover:text-white"}`}>
+            <LayoutGrid size={14} /> Grid
+          </button>
+        </div>
+
+        <div className="relative w-full min-h-[500px]">
+          <AnimatePresence mode="wait">
+            {viewMode === "stack" ? (
+              <motion.div key="stack" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="relative h-[550px] flex items-center justify-center w-full">
+                
+                {/* Desktop-Only Large Chevrons */}
+                <div className="absolute inset-0 hidden md:flex items-center justify-between z-50 pointer-events-none px-4 lg:px-20">
+                    <button onClick={handlePrev} className="group p-4 rounded-full bg-white/5 border border-white/10 hover:border-primary/50 transition-all pointer-events-auto shadow-2xl backdrop-blur-sm">
+                        <FaChevronLeft size={24} className="text-white group-hover:text-primary transition-colors" />
+                    </button>
+                    <button onClick={handleNext} className="group p-4 rounded-full bg-white/5 border border-white/10 hover:border-primary/50 transition-all pointer-events-auto shadow-2xl backdrop-blur-sm">
+                        <FaChevronRight size={24} className="text-white group-hover:text-primary transition-colors" />
+                    </button>
+                </div>
+
+                <div className="relative w-full max-w-[320px] sm:max-w-[360px] md:max-w-[440px] h-full flex items-center justify-center overflow-visible">
+                  <AnimatePresence mode="popLayout">
+                    {projects.map((item, index) => {
+                      const isCenter = index === currentIndex;
+                      const isNext = index === (currentIndex + 1) % projects.length;
+                      const isPrev = index === (currentIndex - 1 + projects.length) % projects.length;
+                      if (!isCenter && !isNext && !isPrev) return null;
+
+                      return (
+                        <motion.div
+                          key={item.id}
+                          drag="x"
+                          dragConstraints={{ left: 0, right: 0 }}
+                          onDragEnd={(_, info) => {
+                            if (info.offset.x > 80) handlePrev();
+                            else if (info.offset.x < -80) handleNext();
+                          }}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{
+                            opacity: isCenter ? 1 : 0.25,
+                            scale: isCenter ? 1 : 0.85,
+                            x: isCenter ? 0 : isNext ? 160 : -160,
+                            zIndex: isCenter ? 30 : 10,
+                            rotateY: isCenter ? 0 : isNext ? -15 : 15,
+                          }}
+                          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                          className="absolute w-full cursor-grab active:cursor-grabbing touch-none"
+                        >
+                          <ProjectCard item={item} />
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="grid" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mx-auto px-4">
+                {projects.map((item) => (
+                  <div key={item.id} className="h-fit flex justify-center">
+                    <ProjectCard item={item} />
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-12">
+          <Link href="https://github.com/Harsh-Pathak3601" target="_blank" className="group flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
+            <span className="text-white/80 text-sm font-semibold">View Full Archive</span>
+            <ArrowUpRight className="w-4 h-4 text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </Link>
         </div>
       </div>
