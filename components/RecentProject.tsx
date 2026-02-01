@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaLocationArrow, FaGithub, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { LayoutGrid, Layers, ArrowUpRight, GitFork, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,7 +16,6 @@ const RecentProjects = () => {
 
   const ProjectCard = ({ item }: { item: any }) => (
     <motion.div
-      // Smooth border hover effect
       whileHover={{ 
         y: -5,
         borderColor: "rgba(168, 85, 247, 0.6)", 
@@ -33,7 +32,6 @@ const RecentProjects = () => {
       </div>
 
       <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center">
-        {/* REFINED MOBILE CHEVRONS: Minimal & Clean */}
         <div className="flex items-center justify-center gap-5 mb-3 w-full">
           {viewMode === "stack" && (
             <button 
@@ -117,9 +115,16 @@ const RecentProjects = () => {
         <div className="relative w-full min-h-[520px]">
           <AnimatePresence mode="wait">
             {viewMode === "stack" ? (
-              <motion.div key="stack" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative h-[650px] flex items-center justify-center w-full">
+              <motion.div 
+                key="stack" 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }} 
+                className="relative h-[650px] flex flex-col items-center justify-center w-full"
+                style={{ perspective: "1200px" }}
+              >
                 
-                {/* Desktop Large Chevrons */}
+                {/* Navigation Chevrons */}
                 <div className="absolute inset-0 hidden md:flex items-center justify-between z-50 pointer-events-none px-4 lg:px-20">
                     <button onClick={handlePrev} className="group p-4 rounded-full bg-white/5 border border-white/10 hover:border-primary/50 transition-all pointer-events-auto shadow-2xl backdrop-blur-sm">
                         <FaChevronLeft size={24} className="text-white group-hover:text-primary transition-colors" />
@@ -129,12 +134,13 @@ const RecentProjects = () => {
                     </button>
                 </div>
 
-                <div className="relative w-full max-w-[320px] sm:max-w-[360px] md:max-w-[440px] h-full flex items-center justify-center overflow-visible">
+                <div className="relative w-full max-w-[320px] sm:max-w-[360px] md:max-w-[440px] h-[580px] flex items-center justify-center overflow-visible">
                   <AnimatePresence mode="popLayout" initial={false}>
                     {projects.map((item, index) => {
                       const isCenter = index === currentIndex;
                       const isNext = index === (currentIndex + 1) % projects.length;
                       const isPrev = index === (currentIndex - 1 + projects.length) % projects.length;
+                      
                       if (!isCenter && !isNext && !isPrev) return null;
 
                       return (
@@ -143,21 +149,23 @@ const RecentProjects = () => {
                           drag="x"
                           dragConstraints={{ left: 0, right: 0 }}
                           onDragEnd={(_, info) => {
-                            if (info.offset.x > 70) handlePrev();
-                            else if (info.offset.x < -70) handleNext();
+                            const swipeThreshold = 50;
+                            const swipeVelocity = 500;
+                            if (info.offset.x > swipeThreshold || info.velocity.x > swipeVelocity) handlePrev();
+                            else if (info.offset.x < -swipeThreshold || info.velocity.x < -swipeVelocity) handleNext();
                           }}
-                          initial={{ opacity: 0, scale: 0.9, x: isNext ? 200 : -200 }}
+                          initial={{ opacity: 0, scale: 0.9, x: isNext ? 200 : -200, rotateY: isNext ? -15 : 15 }}
                           animate={{
-                            opacity: isCenter ? 1 : 0.3,
+                            opacity: isCenter ? 1 : 0.35,
                             scale: isCenter ? 1 : 0.88,
                             x: isCenter ? 0 : isNext ? 140 : -140,
                             zIndex: isCenter ? 30 : 10,
                             rotateY: isCenter ? 0 : isNext ? -12 : 12,
                           }}
-                          exit={{ opacity: 0, scale: 0.8, x: currentIndex === index ? 0 : -200 }}
-                          // Ultra-smooth physics tuning
-                          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 1 }}
+                          exit={{ opacity: 0, scale: 0.8, x: isNext ? 200 : -200, transition: { duration: 0.3 } }}
+                          transition={{ type: "spring", stiffness: 150, damping: 25, mass: 0.8 }}
                           className="absolute w-full cursor-grab active:cursor-grabbing touch-none"
+                          style={{ transformStyle: "preserve-3d" }}
                         >
                           <ProjectCard item={item} />
                         </motion.div>
@@ -165,9 +173,34 @@ const RecentProjects = () => {
                     })}
                   </AnimatePresence>
                 </div>
+
+                {/* ANIMATED CAROUSEL DOTS */}
+                <div className="flex items-center justify-center gap-3 mt-8">
+                  {projects.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className="relative h-2 rounded-full transition-all duration-300"
+                    >
+                      <motion.div
+                        animate={{
+                          width: index === currentIndex ? 32 : 8,
+                          backgroundColor: index === currentIndex ? "#CBACF9" : "rgba(255, 255, 255, 0.2)",
+                        }}
+                        className="h-full rounded-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             ) : (
-              <motion.div key="grid" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mx-auto px-4 mt-10">
+              <motion.div 
+                key="grid" 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mx-auto px-4 mt-10"
+              >
                 {projects.map((item) => (
                   <div key={item.id} className="h-fit flex justify-center">
                     <ProjectCard item={item} />
